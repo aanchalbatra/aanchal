@@ -1,0 +1,49 @@
+classDiagram
+    class EntityRestAPI {
+        +Response createEntity(EntityDTO dto)
+        +Response updateEntity(Long id, EntityDTO dto)
+        +Response deleteEntity(Long id)
+        +Response restoreEntity(Long id)
+        +Response searchEntities(SearchCriteria criteria)
+        -validate(EntityDTO dto)
+        -checkPermissions(String action)
+    }
+
+    class EntityService {
+        +Entity create(EntityDTO dto)
+        +Entity update(Long id, EntityDTO dto)
+        +void delete(Long id)
+        +Entity restore(Long id)
+        +List~Entity~ search(SearchCriteria criteria)
+    }
+
+    class DeployedEntityService {
+        +void deployEntity(Entity entity)
+        +void undeployEntity(Entity entity)
+    }
+
+    class ValidationService {
+        +void validate(EntityDTO dto)
+    }
+
+    class MicroServiceClientProvider {
+        +Client getClient(String serviceName)
+    }
+
+    class CustomEntityPermissionChecker {
+        +boolean hasPermission(String action)
+    }
+
+    %% Relationships
+    EntityRestAPI --> EntityService : uses
+    EntityRestAPI --> DeployedEntityService : uses
+    EntityRestAPI --> ValidationService : validates input
+    EntityRestAPI --> MicroServiceClientProvider : uses
+    EntityRestAPI --> CustomEntityPermissionChecker : checks permissions
+
+    EntityRestAPI : <<REST Controller>>
+    EntityService : <<Service>>
+    DeployedEntityService : <<Service>>
+    ValidationService : <<Utility>>
+    MicroServiceClientProvider : <<Provider>>
+    CustomEntityPermissionChecker : <<Security>>
